@@ -134,7 +134,7 @@ func createRunAsGroupStrategy(opts *policy.RunAsGroupStrategyOptions) (group.Gro
 	case policy.RunAsGroupStrategyRunAsAny:
 		return group.NewRunAsAny()
 	case policy.RunAsGroupStrategyMayRunAs:
-		return group.NewMayRunAs(opts.Ranges)
+		return group.NewMayRunAs(opts.Ranges, false)
 	default:
 		return nil, fmt.Errorf("Unrecognized RunAsGroup strategy type %s", opts.Rule)
 	}
@@ -168,7 +168,7 @@ func createFSGroupStrategy(opts *policy.FSGroupStrategyOptions) (group.GroupStra
 	case policy.FSGroupStrategyRunAsAny:
 		return group.NewRunAsAny()
 	case policy.FSGroupStrategyMayRunAs:
-		return group.NewMayRunAs(opts.Ranges)
+		return group.NewMayRunAs(opts.Ranges, false)
 	case policy.FSGroupStrategyMustRunAs:
 		return group.NewMustRunAs(opts.Ranges)
 	default:
@@ -182,7 +182,7 @@ func createSupplementalGroupStrategy(opts *policy.SupplementalGroupsStrategyOpti
 	case policy.SupplementalGroupsStrategyRunAsAny:
 		return group.NewRunAsAny()
 	case policy.SupplementalGroupsStrategyMayRunAs:
-		return group.NewMayRunAs(opts.Ranges)
+		return group.NewMayRunAs(opts.Ranges, true)
 	case policy.SupplementalGroupsStrategyMustRunAs:
 		return group.NewMustRunAs(opts.Ranges)
 	default:

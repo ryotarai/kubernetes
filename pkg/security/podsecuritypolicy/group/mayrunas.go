@@ -32,8 +32,8 @@ type mayRunAs struct {
 var _ GroupStrategy = &mayRunAs{}
 
 // NewMayRunAs provides a new MayRunAs strategy.
-func NewMayRunAs(ranges []policy.IDRange) (GroupStrategy, error) {
-	if len(ranges) == 0 {
+func NewMayRunAs(ranges []policy.IDRange, allowEmpty bool) (GroupStrategy, error) {
+	if !allowEmpty && len(ranges) == 0 {
 		return nil, fmt.Errorf("ranges must be supplied for MayRunAs")
 	}
 	return &mayRunAs{

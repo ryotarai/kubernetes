@@ -1371,6 +1371,11 @@ func TestAdmitSupplementalGroups(t *testing.T) {
 	mustRunAs.Spec.SupplementalGroups.Rule = policy.SupplementalGroupsStrategyMustRunAs
 	mustRunAs.Spec.SupplementalGroups.Ranges = []policy.IDRange{{Min: int64(999), Max: int64(1000)}}
 
+	mayRunAs := permissivePSP()
+	mayRunAs.Name = "mayRunAs"
+	mayRunAs.Spec.SupplementalGroups.Rule = policy.SupplementalGroupsStrategyMayRunAs
+	mayRunAs.Spec.SupplementalGroups.Ranges = []policy.IDRange{}
+
 	tests := map[string]struct {
 		pod                *kapi.Pod
 		psps               []*policy.PodSecurityPolicy
@@ -1432,6 +1437,20 @@ func TestAdmitSupplementalGroups(t *testing.T) {
 			shouldPassValidate: true,
 			expectedPodSC:      podSC(999),
 			expectedPSP:        mustRunAs.Name,
+		},
+		"mayRunAs good pod request": {
+			pod:                createPodWithSecurityContexts(nil, nil),
+			psps:               []*policy.PodSecurityPolicy{mayRunAs},
+			shouldPassAdmit:    true,
+			shouldPassValidate: true,
+			expectedPodSC:      nil,
+			expectedPSP:        mayRunAs.Name,
+		},
+		"mayRunAs bad pod request": {
+			pod:                createPodWithSecurityContexts(podSC(1), nil),
+			psps:               []*policy.PodSecurityPolicy{mayRunAs},
+			shouldPassAdmit:    false,
+			shouldPassValidate: false,
 		},
 	}
 
